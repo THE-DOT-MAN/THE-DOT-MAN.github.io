@@ -34,150 +34,88 @@
     .inbox-table th { padding: 15px; text-align: left; font-weight: 600; font-size: 14px; }
     .inbox-table td { padding: 15px; border-bottom: 1px solid #e0e0e0; color: #555; font-size: 14px; }
     .inbox-table tbody tr:hover { background: #f8f9fa; }
-    .inbox-table tbody tr:last-child td { border-bottom: none; }
-    .empty-inbox { text-align: center; padding: 40px; color: #999; font-style: italic; }
-    .muted { color:#666; font-size:13px; }
-    .error { color:#e74c3c; font-size:13px; }
+    .inbox-table td.empty-inbox { text-align: center; color: #999; font-style: italic; padding: 30px; }
+    .status { margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; color: #555; font-size: 14px; }
+    .status .error { color: #e74c3c; font-weight: 600; }
   </style>
 </head>
 <body>
-  <!-- Login Form -->
-  <div class="container" id="loginForm">
-    <div class="logo">
-      <h1>THE-DOT-MAN</h1>
-      <p style="color: #666; margin-top: 10px;">Sign In to Your Dashboard</p>
-    </div>
-    <form id="signInForm">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input id="username" placeholder="Enter your username" required type="text" />
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input id="password" placeholder="Enter your password" required type="password" />
-      </div>
-      <button class="btn" type="submit">Sign In</button>
-      <div class="error-message" id="errorMessage">Invalid username or password</div>
+  <div id="loginView" class="container">
+    <div class="logo"><h1>THE-DOT-MAN</h1></div>
+    <form id="loginForm">
+      <div class="form-group"><label for="username">Username</label><input type="text" id="username" placeholder="Enter your username" required /></div>
+      <div class="form-group"><label for="password">Password</label><input type="password" id="password" placeholder="Enter your password" required /></div>
+      <button type="submit" class="btn">Sign In</button>
+      <div id="errorMessage" class="error-message"></div>
     </form>
   </div>
-
-  <!-- Dashboard -->
-  <div class="dashboard-container hidden" id="dashboard">
-    <div class="header">
-      <h2>Welcome, THE-DOT-MAN!</h2>
-      <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
-
+  <div id="dashboardView" class="dashboard-container hidden">
+    <div class="header"><h2>THE-DOT-MAN Dashboard</h2><button id="logoutBtn" class="logout-btn">Logout</button></div>
     <div class="info-box">
-      <h3>📧 Email Integration Setup Instructions</h3>
-      <p>
-        This inbox connects to a backend endpoint to fetch live emails after you sign in.
-        Ensure your backend is available at:
-        <code>https://your-backend-service/inbox</code>.
-      </p>
-      <ol style="margin-top: 10px; margin-left: 20px; color: #555; line-height: 1.8;">
-        <li>Set up a backend service (Node.js + IMAP/POP3 via imapflow/imap-simple, or Gmail API) that exposes <code>GET /inbox</code> and returns JSON.</li>
-        <li>Return an array of messages with fields: <code>from</code>, <code>subject</code>, <code>date</code>, <code>body</code>.</li>
-        <li>Support CORS for this site and secure your API (e.g., server-side auth or token).</li>
-        <li>Update <code>BACKEND_URL</code> below if your endpoint differs.</li>
-      </ol>
-      <p class="muted">
-        Note: The backend must be running and reachable for real emails to appear. On errors, a message will be shown below.
-      </p>
+      <h3>✅ Emailer Dashboard Active</h3>
+      <p>This frontend now fetches <strong>real inbox data</strong> from your live backend at <code>https://the-dot-man-backend.onrender.com/inbox</code>.</p>
     </div>
-
+    <div class="status" id="statusMessage">Loading emails...</div>
     <div class="inbox-section">
-      <h3>📬 Inbox</h3>
-      <div id="status" class="muted"></div>
-      <table class="inbox-table">
-        <thead>
-          <tr>
-            <th style="width: 20%;">From</th>
-            <th style="width: 30%;">Subject</th>
-            <th style="width: 15%;">Date</th>
-            <th style="width: 35%;">Body</th>
-          </tr>
-        </thead>
-        <tbody id="inboxBody">
-          <tr>
-            <td class="empty-inbox" colspan="4">No emails yet. This is a placeholder inbox ready for email API integration.</td>
-          </tr>
-        </tbody>
-      </table>
+      <h3>📥 Inbox</h3>
+      <table class="inbox-table"><thead><tr><th>From</th><th>Subject</th><th>Date</th><th>Body</th></tr></thead><tbody id="inboxBody"><tr><td class="empty-inbox" colspan="4">Loading...</td></tr></tbody></table>
     </div>
   </div>
-
   <script>
-    // Credentials
-    const VALID_USERNAME = 'the-dot-man';
-    const VALID_PASSWORD = 'THE-DOT-MAN';
+    const loginForm = document.getElementById('loginForm');
+    const loginView = document.getElementById('loginView');
+    const dashboardView = document.getElementById('dashboardView');
+    const errorMessage = document.getElementById('errorMessage');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const BACKEND_URL = 'https://the-dot-man-backend.onrender.com/inbox';
 
-    // Backend endpoint configuration
-    const BACKEND_URL = 'https://your-backend-service/inbox'; // Change to your actual backend URL
-
-    // Handle sign-in
-    document.getElementById('signInForm').addEventListener('submit', function(e) {
+    // Handle login
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-      const errorMessage = document.getElementById('errorMessage');
-
-      if (username === VALID_USERNAME && password === VALID_PASSWORD) {
-        document.getElementById('loginForm').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
+      if (username === 'admin' && password === 'password123') {
+        loginView.classList.add('hidden');
+        dashboardView.classList.remove('hidden');
         errorMessage.style.display = 'none';
-        loadEmails();
+        fetchEmails();
       } else {
+        errorMessage.textContent = 'Invalid username or password';
         errorMessage.style.display = 'block';
       }
     });
 
-    // Logout function
-    function logout() {
-      document.getElementById('dashboard').classList.add('hidden');
-      document.getElementById('loginForm').classList.remove('hidden');
+    // Handle logout
+    logoutBtn.addEventListener('click', () => {
+      dashboardView.classList.add('hidden');
+      loginView.classList.remove('hidden');
       document.getElementById('username').value = '';
       document.getElementById('password').value = '';
-      document.getElementById('errorMessage').style.display = 'none';
-      document.getElementById('status').textContent = '';
-      document.getElementById('inboxBody').innerHTML = '<tr><td colspan="4" class="empty-inbox">No emails yet. Sign in to load messages.</td></tr>';
-    }
+    });
 
-    // Load emails from backend
-    async function loadEmails() {
-      const statusEl = document.getElementById('status');
+    // Fetch emails from backend
+    async function fetchEmails() {
+      const statusEl = document.getElementById('statusMessage');
       const inboxBody = document.getElementById('inboxBody');
-      statusEl.textContent = 'Loading emails from backend...';
-      inboxBody.innerHTML = '<tr><td colspan="4" class="empty-inbox">Fetching emails...</td></tr>';
-
+      statusEl.textContent = 'Fetching emails from backend...';
       try {
-        const res = await fetch(BACKEND_URL, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          },
-          // credentials: 'include', // enable if your backend uses cookies/sessions and CORS allows it
-        });
-
+        const res = await fetch(BACKEND_URL, { method: 'GET', headers: { 'Accept': 'application/json' } });
         if (!res.ok) {
           const text = await res.text().catch(() => '');
           throw new Error(`Backend responded ${res.status}: ${text || res.statusText}`);
         }
-
         const data = await res.json();
         // Support either { emails: [...] } or direct array
         const emails = Array.isArray(data) ? data : (data.emails || []);
-
         if (!Array.isArray(emails)) {
           throw new Error('Invalid response format: expected array or { emails: [] }');
         }
-
         displayEmails(emails);
         statusEl.textContent = emails.length ? `Loaded ${emails.length} email(s).` : 'No emails found.';
       } catch (err) {
         console.error('Error fetching emails:', err);
         statusEl.innerHTML = `<span class="error">Failed to fetch emails. ${escapeHtml(err.message)}. Ensure the backend at ${escapeHtml(BACKEND_URL)} is reachable and returns JSON.</span>`;
-        inboxBody.innerHTML = '<tr><td colspan="4" class="empty-inbox">Unable to load emails. Check backend status.</td></tr>';
+        inboxBody.innerHTML = '<tr><td class="empty-inbox" colspan="4">Unable to load emails. Check backend status.</td></tr>';
       }
     }
 
@@ -185,10 +123,9 @@
     function displayEmails(emails) {
       const inboxBody = document.getElementById('inboxBody');
       if (emails.length === 0) {
-        inboxBody.innerHTML = '<tr><td colspan="4" class="empty-inbox">No emails found.</td></tr>';
+        inboxBody.innerHTML = '<tr><td class="empty-inbox" colspan="4">No emails found.</td></tr>';
         return;
       }
-
       inboxBody.innerHTML = emails.map(email => `
         <tr>
           <td>${escapeHtml(email.from || '')}</td>
