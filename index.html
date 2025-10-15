@@ -29,6 +29,16 @@
             max-width: 400px;
         }
         
+        .dashboard-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 95%;
+            max-width: 1200px;
+            margin: 20px;
+        }
+        
         .logo {
             text-align: center;
             margin-bottom: 30px;
@@ -36,49 +46,42 @@
         
         .logo h1 {
             color: #667eea;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-        
-        .logo p {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .sign-in-form {
-            display: flex;
-            flex-direction: column;
+            font-size: 28px;
+            font-weight: bold;
         }
         
         .form-group {
             margin-bottom: 20px;
         }
         
-        .form-group label {
+        label {
             display: block;
             margin-bottom: 8px;
             color: #333;
-            font-weight: 600;
+            font-weight: 500;
         }
         
-        .form-group input {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 14px;
             transition: border-color 0.3s;
         }
         
-        .form-group input:focus {
+        input[type="text"]:focus,
+        input[type="password"]:focus {
             outline: none;
             border-color: #667eea;
         }
         
-        .sign-in-btn {
+        .btn {
+            width: 100%;
+            padding: 12px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 14px;
             border: none;
             border-radius: 5px;
             font-size: 16px;
@@ -87,133 +90,283 @@
             transition: transform 0.2s;
         }
         
-        .sign-in-btn:hover {
+        .btn:hover {
             transform: translateY(-2px);
         }
         
         .error-message {
-            color: #d32f2f;
+            color: #e74c3c;
             font-size: 14px;
             margin-top: 10px;
-            display: none;
-        }
-        
-        .dashboard {
-            display: none;
             text-align: center;
+            display: none;
         }
         
-        .dashboard h1 {
-            color: #667eea;
-            margin-bottom: 20px;
+        .hidden {
+            display: none;
         }
         
-        .dashboard p {
-            color: #666;
-            font-size: 18px;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
         }
         
-        .dashboard-content {
-            background: #f5f5f5;
-            padding: 30px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .dashboard-content h2 {
-            color: #333;
-            margin-bottom: 15px;
+        .header h2 {
+            color: #667eea;
+            font-size: 24px;
         }
         
         .logout-btn {
-            background: #d32f2f;
-            color: white;
             padding: 10px 20px;
+            background: #e74c3c;
+            color: white;
             border: none;
             border-radius: 5px;
             font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            margin-top: 20px;
+            transition: background 0.3s;
         }
         
         .logout-btn:hover {
-            background: #b71c1c;
+            background: #c0392b;
+        }
+        
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+        
+        .info-box h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .info-box p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .info-box code {
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+        
+        .inbox-section {
+            margin-top: 20px;
+        }
+        
+        .inbox-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .inbox-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .inbox-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .inbox-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .inbox-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .inbox-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .inbox-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .empty-inbox {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="loginSection">
-            <div class="logo">
-                <h1>🔐 THE-DOT-MAN</h1>
-                <p>Private Dashboard Access</p>
+    <!-- Login Form -->
+    <div id="loginForm" class="container">
+        <div class="logo">
+            <h1>THE-DOT-MAN</h1>
+            <p style="color: #666; margin-top: 10px;">Sign In to Your Dashboard</p>
+        </div>
+        <form id="signInForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
             </div>
-            
-            <form class="sign-in-form" id="signInForm" onsubmit="return false;">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-                
-                <button type="submit" class="sign-in-btn" onclick="signIn()">Sign In</button>
-                
-                <div class="error-message" id="errorMessage">
-                    Access denied. Only the-dot-man can sign in.
-                </div>
-            </form>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn">Sign In</button>
+            <div id="errorMessage" class="error-message">Invalid username or password</div>
+        </form>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard-container hidden">
+        <div class="header">
+            <h2>Welcome, THE-DOT-MAN!</h2>
+            <button onclick="logout()" class="logout-btn">Logout</button>
         </div>
         
-        <div class="dashboard" id="dashboard">
-            <div class="logo">
-                <h1>Welcome Back! 👋</h1>
-                <p>You have successfully signed in to your private dashboard</p>
-            </div>
-            
-            <div class="dashboard-content">
-                <h2>Your Private Dashboard</h2>
-                <p>This is your personal space, the-dot-man!</p>
-                <p>✓ Access Granted</p>
-                <p>✓ All systems operational</p>
-            </div>
-            
-            <button class="logout-btn" onclick="logout()">Logout</button>
+        <div class="info-box">
+            <h3>📧 Email Integration Setup Instructions</h3>
+            <p>
+                <strong>This is a placeholder inbox interface.</strong> To connect a live email inbox, you'll need to:
+            </p>
+            <ol style="margin-top: 10px; margin-left: 20px; color: #555; line-height: 1.8;">
+                <li>Set up an email API service (e.g., Gmail API, SendGrid, Mailgun, or a custom IMAP/POP3 backend)</li>
+                <li>Create a backend server to handle API authentication and email fetching</li>
+                <li>Update the JavaScript code to call your backend API endpoint (e.g., <code>/api/fetch-emails</code>)</li>
+                <li>Parse the API response and populate the inbox table dynamically</li>
+                <li>Consider using OAuth 2.0 for secure email provider authentication</li>
+            </ol>
+            <p style="margin-top: 10px;">
+                <strong>Current Status:</strong> The inbox table below is ready to display emails. Simply replace the placeholder data in the JavaScript with real API calls when your email backend is configured.
+            </p>
+        </div>
+        
+        <div class="inbox-section">
+            <h3>📬 Inbox</h3>
+            <table class="inbox-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">From</th>
+                        <th style="width: 30%;">Subject</th>
+                        <th style="width: 15%;">Date</th>
+                        <th style="width: 35%;">Body</th>
+                    </tr>
+                </thead>
+                <tbody id="inboxBody">
+                    <tr>
+                        <td colspan="4" class="empty-inbox">No emails yet. This is a placeholder inbox ready for email API integration.</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    
+
     <script>
-        function signIn() {
-            const username = document.getElementById('username').value.toLowerCase().trim();
+        // Credentials
+        const VALID_USERNAME = 'the-dot-man';
+        const VALID_PASSWORD = 'THE-DOT-MAN';
+        
+        // Handle sign-in
+        document.getElementById('signInForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
             
-            // Only allow 'the-dot-man' username
-            if (username === 'the-dot-man' && password.length > 0) {
-                // Hide login section
-                document.getElementById('loginSection').style.display = 'none';
-                // Show dashboard
-                document.getElementById('dashboard').style.display = 'block';
+            if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+                // Hide login form and show dashboard
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
                 errorMessage.style.display = 'none';
+                
+                // Load emails (placeholder - replace with actual API call)
+                loadEmails();
             } else {
                 // Show error message
                 errorMessage.style.display = 'block';
             }
-            
-            return false;
+        });
+        
+        // Logout function
+        function logout() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('errorMessage').style.display = 'none';
         }
         
-        function logout() {
-            // Show login section
-            document.getElementById('loginSection').style.display = 'block';
-            // Hide dashboard
-            document.getElementById('dashboard').style.display = 'none';
-            // Clear form
-            document.getElementById('signInForm').reset();
+        // Load emails (placeholder function - replace with actual API call)
+        function loadEmails() {
+            const inboxBody = document.getElementById('inboxBody');
+            
+            // PLACEHOLDER: Replace this with actual API call to your email backend
+            // Example:
+            // fetch('/api/fetch-emails')
+            //     .then(response => response.json())
+            //     .then(emails => {
+            //         displayEmails(emails);
+            //     })
+            //     .catch(error => console.error('Error fetching emails:', error));
+            
+            // For now, showing empty inbox message
+            inboxBody.innerHTML = '<tr><td colspan="4" class="empty-inbox">No emails yet. Connect your email API to see messages here.</td></tr>';
+            
+            // EXAMPLE: Uncomment below to see how emails would be displayed
+            // const sampleEmails = [
+            //     { from: 'example@email.com', subject: 'Welcome!', date: '2025-10-15', body: 'Welcome to THE-DOT-MAN dashboard!' },
+            //     { from: 'info@service.com', subject: 'Account Update', date: '2025-10-14', body: 'Your account has been updated.' }
+            // ];
+            // displayEmails(sampleEmails);
+        }
+        
+        // Display emails in the table
+        function displayEmails(emails) {
+            const inboxBody = document.getElementById('inboxBody');
+            
+            if (emails.length === 0) {
+                inboxBody.innerHTML = '<tr><td colspan="4" class="empty-inbox">No emails found.</td></tr>';
+                return;
+            }
+            
+            inboxBody.innerHTML = emails.map(email => `
+                <tr>
+                    <td>${escapeHtml(email.from)}</td>
+                    <td><strong>${escapeHtml(email.subject)}</strong></td>
+                    <td>${escapeHtml(email.date)}</td>
+                    <td>${escapeHtml(email.body)}</td>
+                </tr>
+            `).join('');
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
     </script>
 </body>
